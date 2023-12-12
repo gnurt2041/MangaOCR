@@ -40,7 +40,7 @@ def create_csv(path, output_csv_name):
     print("CSV file created successfully!")
 
 
-def create_img_text(csv_path):
+def create_img_text(csv_path, margin):
     # Read csv file 
     # data = pd.read_csv("data_text_img.csv")
     data = pd.read_csv(csv_path)
@@ -56,7 +56,11 @@ def create_img_text(csv_path):
     name = ""
     for i, path in enumerate(img_path):
         image = cv2.imread(path)
-        img_text = image[ymin[i] : ymax[i], xmin[i] : xmax[i]]
+        xmin_img = max(xmin[i] - margin, 0)
+        xmax_img = min(xmax[i] + margin, image.shape[1])
+        ymin_img = max(ymin[i] - margin, 0)
+        ymax_img = min(ymax[i] + margin, image.shape[0])
+        img_text = image[ymin_img : ymax_img, xmin_img : xmax_img]
         name = "Manga109s_released_2021_12_30\\images_text\\" + str(i) + ".jpg"
         print(name, text[i])
         cv2.imwrite(name, img_text)
@@ -72,8 +76,9 @@ def create_img_text(csv_path):
 if __name__ == '__main__':
     path = "E:\Manga109 dataset\Manga109s_released_2021_12_30"
     output_csv_name = "data_text_img.csv"
+    margin = 10
     create_csv(path, output_csv_name)
-    create_img_text(output_csv_name)
+    create_img_text(output_csv_name, margin)
 
 
 
