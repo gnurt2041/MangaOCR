@@ -5,21 +5,25 @@ from PIL import Image
 import numpy as np
 import albumentations as A
 import cv2
+from data.utils import get_processor
 
 class Manga109(Dataset):
-    def __init__(self, img_text_file, processor, augument = False):
+    def __init__(self, img_text_file, processor, augment = False, max_length):
         self.read_csv(img_text_file)
         self.processor = processor
-        self.augument = augument
+        self.augment = augment
         self.transform_medium, self.transform_heavy = self.get_transforms()
+        self.max_length = max_length
 
     def __len__(self):
         return len(self.img_path)
     
     def __getitem__(self, index):
         img = Image.open(self.img_path[index])
-        text = self.processor(self.text_collection[index])
-
+        text = self.processor.tokenizer(self.text_collection[index],
+                                        padding = "max_length",
+                                        max_length = self.max_length,
+                                        truncation = True).input_ids
         if self.augment:
             medium_p = 0.8
             heavy_p = 0.02
@@ -34,8 +38,12 @@ class Manga109(Dataset):
             transform = None
 
         img = transform(image=img)['image']
+        img = self.processor(img, return_tensors="pt").pixel_values
+        text = np.array(text)
+        # important: make sure that PAD tokens are ignored by the loss function
+        text[text == self.processor.tokenizer.pad_token_id] = -100
 
-        return np.array(img), text
+        return img.squeeze(), torch.tensor(text)
     
     def train_val_split(self, dataset, train_size = 0.8, test_size = 0.1, val_size = 0.1):
 
@@ -89,3 +97,11 @@ class Manga109(Dataset):
         ])
 
         return t_medium, t_heavy
+    
+if __name__ == '__main__':
+    encoder_name = 'facebook/deit-tiny-patch16-224'
+    decoder_name = 'cl-tohoku/bert-base-japanese-char-v2'
+    max_length = 300
+    processor = get_processor(encoder_name, decoder_name)
+    data = Manga109(img_text_file = "text_img.csv", processor = processor, \
+                  augment=True, max_length=max_length)
