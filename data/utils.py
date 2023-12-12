@@ -1,5 +1,4 @@
-from transformers import AutoConfig, AutoModelForCausalLM, AutoModel, TrOCRProcessor, VisionEncoderDecoderModel, \
-    AutoFeatureExtractor, AutoTokenizer, VisionEncoderDecoderConfig
+from transformers import TrOCRProcessor, AutoFeatureExtractor, AutoTokenizer
 
 class TrOCRProcessorCustom(TrOCRProcessor):
     def __init__(self, feature_extractor, tokenizer):
