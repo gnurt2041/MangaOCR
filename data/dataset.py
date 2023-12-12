@@ -8,7 +8,7 @@ import cv2
 from data.utils import get_processor
 
 class Manga109(Dataset):
-    def __init__(self, img_text_file, processor, augment = False, max_length):
+    def __init__(self, img_text_file, processor, augment = False, max_length = 300):
         self.read_csv(img_text_file)
         self.processor = processor
         self.augment = augment
