@@ -4,6 +4,7 @@ import pandas as pd
 from PIL import Image
 import numpy as np
 import albumentations as A
+import cv2
 
 class Manga109(Dataset):
     def __init__(self, img_text_file, processor, augument = False):
@@ -48,7 +49,7 @@ class Manga109(Dataset):
 
     def read_csv(self, csv_file):
         df = pd.DataFrame(csv_file)
-        self.img_path = df["name"]
+        self.img_path = df["path"]
         self.text_collection = df["text"]
     
     @staticmethod
