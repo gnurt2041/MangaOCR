@@ -1,18 +1,18 @@
 from transformers import AutoConfig, AutoModelForCausalLM, AutoModel, TrOCRProcessor, VisionEncoderDecoderModel, \
-    AutoFeatureExtractor, AutoTokenizer, VisionEncoderDecoderConfig
+    AutoFeatureExtractor, AutoTokenizer, VisionEncoderDecoderConfig, AutoImageProcessor
 
 
 class TrOCRProcessorCustom(TrOCRProcessor):
     """The only point of this class is to bypass type checks of base class."""
 
-    def __init__(self, feature_extractor, tokenizer):
-        self.feature_extractor = feature_extractor
+    def __init__(self, image_processor, tokenizer):
+        self.image_processor = image_processor
         self.tokenizer = tokenizer
         self.current_processor = self.feature_extractor
 
 
 def get_processor(encoder_name, decoder_name):
-    feature_extractor = AutoFeatureExtractor.from_pretrained(encoder_name)
+    feature_extractor = AutoImageProcessor.from_pretrained(encoder_name)
     tokenizer = AutoTokenizer.from_pretrained(decoder_name)
     processor = TrOCRProcessorCustom(feature_extractor, tokenizer)
     return processor

@@ -1,3 +1,5 @@
+import sys
+sys.path.append("..")
 import torch
 from torch.utils.data import Dataset, random_split
 import pandas as pd
@@ -6,7 +8,7 @@ import numpy as np
 import albumentations as A
 import cv2
 import os
-from data.utils import get_processor
+from MangaOCR.data.utils import get_processor
 
 class Manga109(Dataset):
     def __init__(self, img_source ,img_text_file, processor, augment = False, max_length = 300):
@@ -17,7 +19,7 @@ class Manga109(Dataset):
         self.transform_medium, self.transform_heavy = self.get_transforms()
         self.max_length = max_length
 
-    def __len__(self):
+    def __len__(self) -> int :
         return len(self.img_path)
     
     def __getitem__(self, index):
@@ -46,20 +48,10 @@ class Manga109(Dataset):
         text[text == self.processor.tokenizer.pad_token_id] = -100
 
         return img.squeeze(), torch.tensor(text)
-    
-    def train_val_split(self, train_size = 0.8, test_size = 0.1, val_size = 0.1):
-
-        train_size = int(0.8 * self.__len__)
-        val_size = int(0.1 * self.__len__)
-        # test_size = int(0.1 * self.__len__)
-        test_size = self.__len__ - train_size - val_size  # Ensure all instances are included
-        split_sizes = [train_size, val_size, test_size]
-        train_dataset, val_dataset, test_dataset = random_split(self, split_sizes)
-        return train_dataset, val_dataset, test_dataset
-
 
     def read_csv(self, csv_file):
-        df = pd.DataFrame(csv_file)
+        colnames=['text','path'] 
+        df = pd.read_csv(csv_file, names=colnames, header=None)
         self.img_path = df["path"]
         self.text_collection = df["text"]
     
@@ -100,7 +92,16 @@ class Manga109(Dataset):
         ])
 
         return t_medium, t_heavy
-    
+def train_val_split(dataset, train_size = 0.8, test_size = 0.1, val_size = 0.1):
+
+    train_size = int(train_size * dataset.__len__())
+    val_size = int(val_size * dataset.__len__())
+    # test_size = int(0.1 * dataset.__len__)
+    test_size = dataset.__len__() - train_size - val_size  # Ensure all instances are included
+    split_sizes = [train_size, val_size, test_size]
+    train_dataset, val_dataset, test_dataset = random_split(dataset, split_sizes)
+    return train_dataset, val_dataset, test_dataset
+
 if __name__ == '__main__':
     encoder_name = 'facebook/deit-tiny-patch16-224'
     decoder_name = 'cl-tohoku/bert-base-japanese-char-v2'
