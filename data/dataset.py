@@ -5,11 +5,13 @@ from PIL import Image
 import numpy as np
 import albumentations as A
 import cv2
+import os
 from data.utils import get_processor
 
 class Manga109(Dataset):
-    def __init__(self, img_text_file, processor, augment = False, max_length = 300):
+    def __init__(self, img_source ,img_text_file, processor, augment = False, max_length = 300):
         self.read_csv(img_text_file)
+        self.source = img_source
         self.processor = processor
         self.augment = augment
         self.transform_medium, self.transform_heavy = self.get_transforms()
@@ -19,7 +21,7 @@ class Manga109(Dataset):
         return len(self.img_path)
     
     def __getitem__(self, index):
-        img = Image.open(self.img_path[index])
+        img = Image.open(self.source + os.sep + self.img_path[index]).convert('RGB')
         text = self.processor.tokenizer(self.text_collection[index],
                                         padding = "max_length",
                                         max_length = self.max_length,
