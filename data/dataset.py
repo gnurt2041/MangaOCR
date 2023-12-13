@@ -45,13 +45,14 @@ class Manga109(Dataset):
 
         return img.squeeze(), torch.tensor(text)
     
-    def train_val_split(self, dataset, train_size = 0.8, test_size = 0.1, val_size = 0.1):
+    def train_val_split(self, train_size = 0.8, test_size = 0.1, val_size = 0.1):
 
         train_size = int(0.8 * self.__len__)
         val_size = int(0.1 * self.__len__)
-        test_size = int(0.1 * self.__len__)
+        # test_size = int(0.1 * self.__len__)
+        test_size = self.__len__ - train_size - val_size  # Ensure all instances are included
         split_sizes = [train_size, val_size, test_size]
-        train_dataset, val_dataset, test_dataset = random_split(dataset, split_sizes)
+        train_dataset, val_dataset, test_dataset = random_split(self, split_sizes)
         return train_dataset, val_dataset, test_dataset
 
 
