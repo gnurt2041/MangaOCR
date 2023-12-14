@@ -1,6 +1,7 @@
 import manga109api
 import pandas as pd
 import cv2 
+import os
 from tqdm import tqdm
 
 import sys
@@ -60,6 +61,8 @@ def create_img_text(csv_path, margin):
     csv_new_file = []
     img_text_dict = {}
     name = ""
+    if not os.path.exists(f"{MANGA109_ROOT}/images_text/"):
+        os.mkdirs(f"{MANGA109_ROOT}/images_text/")
     for i, path in enumerate(tqdm(img_path)):
         # print(path)
         image = cv2.imread(path)
