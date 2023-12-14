@@ -12,9 +12,9 @@ class TrOCRProcessorCustom(TrOCRProcessor):
 
 
 def get_processor(encoder_name, decoder_name):
-    feature_extractor = AutoImageProcessor.from_pretrained(encoder_name)
+    image_processor = AutoImageProcessor.from_pretrained(encoder_name)
     tokenizer = AutoTokenizer.from_pretrained(decoder_name)
-    processor = TrOCRProcessor(feature_extractor, tokenizer)
+    processor = TrOCRProcessor(image_processor, tokenizer)
     return processor
 
 def get_model(encoder_name, decoder_name, max_length, num_decoder_layers=None):
