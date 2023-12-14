@@ -55,10 +55,10 @@ class Manga109(Dataset):
         return encoding
 
     def read_csv(self, csv_file):
-        colnames=['text','path'] 
-        df = pd.read_csv(csv_file, names=colnames, header=None)
-        self.img_path = df["path"]
-        self.text_collection = df["text"]
+        # colnames=['text','path'] 
+        df = pd.read_csv(csv_file)
+        self.img_path = list(df["path"])
+        self.text_collection = list(df["text"])
     
     @staticmethod
     def get_transforms():
