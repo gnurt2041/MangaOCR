@@ -26,7 +26,7 @@ def run(
     # train_dataset = Manga109(processor, 'train', max_len, augment=True, skip_packages=[0])
     # eval_dataset = Manga109(processor, 'test', max_len, augment=False, skip_packages=range(1, 9999))
 
-    dataset = Manga109(DATA_ROOT ,'./data/text_img.csv' , processor, augment = True, max_length = 300)
+    dataset = Manga109(DATA_ROOT ,'./text_img.csv' , processor, augment = True, max_length = 300)
     train_dataset, val_datset, test_datset = train_val_split(dataset)
 
     metrics = Metrics(processor)
