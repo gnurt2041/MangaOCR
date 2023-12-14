@@ -23,7 +23,7 @@ class Manga109(Dataset):
         return len(self.img_path)
     
     def __getitem__(self, index):
-        img = Image.open(self.source + os.sep + self.img_path[index]).convert('RGB')
+        img = np.array(Image.open(str(self.source) + os.sep + self.img_path[index]).convert('RGB'))
         text = self.processor.tokenizer(self.text_collection[index],
                                         padding = "max_length",
                                         max_length = self.max_length,
@@ -40,14 +40,19 @@ class Manga109(Dataset):
             }[transform_variant]
         else:
             transform = None
+        if transform is None:
+            transform = A.ToGray(always_apply=True)
 
         img = transform(image=img)['image']
         img = self.processor(img, return_tensors="pt").pixel_values
         text = np.array(text)
         # important: make sure that PAD tokens are ignored by the loss function
         text[text == self.processor.tokenizer.pad_token_id] = -100
-
-        return img.squeeze(), torch.tensor(text)
+        encoding = {
+            "pixel_values": img.squeeze(),
+            "labels": torch.tensor(text),
+        }
+        return encoding
 
     def read_csv(self, csv_file):
         colnames=['text','path'] 
