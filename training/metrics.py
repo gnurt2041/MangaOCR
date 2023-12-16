@@ -10,7 +10,7 @@ class Metrics:
     def compute_metrics(self, pred):
         label_ids = pred.label_ids
         pred_ids = pred.predictions
-        print(label_ids.shape, pred_ids.shape)
+        # print(label_ids.shape, pred_ids.shape)
 
         pred_str = self.processor.batch_decode(pred_ids, skip_special_tokens=True)
         label_ids[label_ids == -100] = self.processor.tokenizer.pad_token_id
@@ -24,8 +24,8 @@ class Metrics:
             results['cer'] = self.cer_metric.compute(predictions=pred_str, references=label_str)
         except Exception as e:
             print(e)
-            print(pred_str)
-            print(label_str)
+            print(f'Predict str: {pred_str}')
+            print(f'Label str: {label_str}')
             results['cer'] = 0
         results['accuracy'] = (pred_str == label_str).mean()
 

@@ -19,7 +19,7 @@ def run(
         num_epochs=8,
         fp16=True,
 ):
-    # wandb.login()
+    wandb.login()
 
     model, processor = get_model(encoder_name, decoder_name, max_len, num_decoder_layers)
 
@@ -40,11 +40,11 @@ def run(
         per_device_eval_batch_size=batch_size,
         fp16=fp16,
         fp16_full_eval=fp16,
-        dataloader_num_workers=16,
+        dataloader_num_workers=2,
         output_dir=output,
         logging_steps=10,
-        save_steps=20000,
-        eval_steps=20000,
+        save_steps=1000,
+        eval_steps=200,
         num_train_epochs=num_epochs,
         run_name=run_name
     )
@@ -52,7 +52,7 @@ def run(
     # instantiate trainer
     trainer = Seq2SeqTrainer(
         model=model,
-        tokenizer=processor.feature_extractor,
+        tokenizer=processor.image_processor,
         args=training_args,
         compute_metrics=metrics.compute_metrics,
         train_dataset=train_dataset,
