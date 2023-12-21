@@ -24,7 +24,8 @@ class Manga109(Dataset):
         return len(self.img_path)
     
     def __getitem__(self, index):
-        img = np.array(Image.open(str(self.source) + os.sep + self.img_path[index]).convert('RGB'))
+        # img = np.array(Image.open(str(self.source) + os.sep + self.img_path[index]).convert('RGB'))
+        img = np.array(self.img_path[index]).convert('RGB'))
         text = self.processor.tokenizer(self.text_collection[index],
                                         padding = "max_length",
                                         max_length = self.max_length,
