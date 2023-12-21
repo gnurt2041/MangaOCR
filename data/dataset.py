@@ -1,3 +1,5 @@
+import sys
+sys.path.append("..")
 import torch
 from torch.utils.data import Dataset, random_split
 import pandas as pd
@@ -5,21 +7,25 @@ from PIL import Image
 import numpy as np
 import albumentations as A
 import cv2
-from data.utils import get_processor
+import os
+from MangaOCR.training.get_model import get_processor
+import matplotlib.pyplot as plt
 
 class Manga109(Dataset):
-    def __init__(self, img_text_file, processor, augment = False, max_length = 300):
+    def __init__(self, img_source ,img_text_file, processor, augment = False, max_length = 300):
         self.read_csv(img_text_file)
+        self.source = img_source
         self.processor = processor
         self.augment = augment
         self.transform_medium, self.transform_heavy = self.get_transforms()
         self.max_length = max_length
 
-    def __len__(self):
+    def __len__(self) -> int :
         return len(self.img_path)
     
     def __getitem__(self, index):
-        img = Image.open(self.img_path[index])
+        # img = np.array(Image.open(str(self.source) + os.sep + self.img_path[index]).convert('RGB'))
+        img = np.array(Image.open(self.img_path[index]).convert('RGB'))
         text = self.processor.tokenizer(self.text_collection[index],
                                         padding = "max_length",
                                         max_length = self.max_length,
@@ -36,29 +42,25 @@ class Manga109(Dataset):
             }[transform_variant]
         else:
             transform = None
+        if transform is None:
+            transform = A.ToGray(always_apply=True)
 
         img = transform(image=img)['image']
         img = self.processor(img, return_tensors="pt").pixel_values
         text = np.array(text)
         # important: make sure that PAD tokens are ignored by the loss function
         text[text == self.processor.tokenizer.pad_token_id] = -100
-
-        return img.squeeze(), torch.tensor(text)
-    
-    def train_val_split(self, dataset, train_size = 0.8, test_size = 0.1, val_size = 0.1):
-
-        train_size = int(0.8 * self.__len__)
-        val_size = int(0.1 * self.__len__)
-        test_size = int(0.1 * self.__len__)
-        split_sizes = [train_size, val_size, test_size]
-        train_dataset, val_dataset, test_dataset = random_split(dataset, split_sizes)
-        return train_dataset, val_dataset, test_dataset
-
+        encoding = {
+            "pixel_values": img.squeeze(),
+            "labels": torch.tensor(text),
+        }
+        return encoding
 
     def read_csv(self, csv_file):
-        df = pd.DataFrame(csv_file)
-        self.img_path = df["path"]
-        self.text_collection = df["text"]
+        # colnames=['text','path'] 
+        df = pd.read_csv(csv_file)
+        self.img_path = list(df["path"])
+        self.text_collection = list(df["text"])
     
     @staticmethod
     def get_transforms():
@@ -97,11 +99,34 @@ class Manga109(Dataset):
         ])
 
         return t_medium, t_heavy
-    
+def train_val_split(dataset, train_size = 0.8, test_size = 0.1, val_size = 0.1):
+
+    train_size = int(train_size * dataset.__len__())
+    val_size = int(val_size * dataset.__len__())
+    # test_size = int(0.1 * dataset.__len__)
+    test_size = dataset.__len__() - train_size - val_size  # Ensure all instances are included
+    split_sizes = [train_size, val_size, test_size]
+    train_dataset, val_dataset, test_dataset = random_split(dataset, split_sizes)
+    return train_dataset, val_dataset, test_dataset
+
+def tensor_to_image(img):
+    return ((img.cpu().numpy() + 1) / 2 * 255).clip(0, 255).astype(np.uint8).transpose(1, 2, 0)
+
+
 if __name__ == '__main__':
     encoder_name = 'facebook/deit-tiny-patch16-224'
     decoder_name = 'cl-tohoku/bert-base-japanese-char-v2'
     max_length = 300
     processor = get_processor(encoder_name, decoder_name)
-    data = Manga109(img_text_file = "text_img.csv", processor = processor, \
+    data = Manga109(img_text_file = "./text_img.csv", processor = processor, \
                   augment=True, max_length=max_length)
+    for i in range(20):
+        sample = data[0]
+        img = tensor_to_image(sample['pixel_values'])
+        tokens = sample['labels']
+        tokens[tokens == -100] = processor.tokenizer.pad_token_id
+        text = ''.join(processor.decode(tokens, skip_special_tokens=True).split())
+
+        print(f'{i}:\n{text}\n')
+        plt.imshow(img)
+        plt.show()

@@ -1,6 +1,13 @@
 import manga109api
 import pandas as pd
 import cv2 
+import os
+from tqdm import tqdm
+
+import sys
+sys.path.append("..")
+
+from MangaOCR.env import MANGA109_ROOT
 
 def create_csv(path, output_csv_name):
     # Read annotations by manga109api
@@ -11,12 +18,12 @@ def create_csv(path, output_csv_name):
     # Create img and text files 
     csv_file = []
     text_img = {}
-    for book in manga109.books:
+    for book in tqdm(manga109.books):
         a = manga109.get_annotation(book = book)["page"]
         for index, i in enumerate(a):
             text_annotation = i["text"]
             if text_annotation != []:
-                img_path = manga109.img_path(book= book, index=index)[20:]
+                img_path = manga109.img_path(book= book, index=index)
                 for text in text_annotation:
                     text_img["text"] = text["#text"]
                     text_img["xmin"] = text["@xmin"]
@@ -24,10 +31,10 @@ def create_csv(path, output_csv_name):
                     text_img["xmax"] = text["@xmax"]
                     text_img["ymax"] = text["@ymax"]
                     text_img["img_path"] = img_path
-                    print(img_path)
-                    print(text)
-                    print(text["#text"])
-                    print(text["@xmin"], text["@ymin"], text["@xmax"], text["@ymax"]) 
+                    # print(img_path)
+                    # print(text)
+                    # print(text["#text"])
+                    # print(text["@xmin"], text["@ymin"], text["@xmax"], text["@ymax"]) 
                     csv_file.append(text_img)
                     text_img = {}
 
@@ -54,18 +61,21 @@ def create_img_text(csv_path, margin):
     csv_new_file = []
     img_text_dict = {}
     name = ""
-    for i, path in enumerate(img_path):
+    if not os.path.exists(f"{MANGA109_ROOT}/images_text/"):
+        os.mkdir(f"{MANGA109_ROOT}/images_text/")
+    for i, path in enumerate(tqdm(img_path)):
+        # print(path)
         image = cv2.imread(path)
         xmin_img = max(xmin[i] - margin, 0)
         xmax_img = min(xmax[i] + margin, image.shape[1])
         ymin_img = max(ymin[i] - margin, 0)
         ymax_img = min(ymax[i] + margin, image.shape[0])
         img_text = image[ymin_img : ymax_img, xmin_img : xmax_img]
-        name = "Manga109s_released_2021_12_30\\images_text\\" + str(i) + ".jpg"
-        print(name, text[i])
+        name = f"{MANGA109_ROOT}/images_text/" + str(i) + ".jpg"
+        # print(name, text[i])
         cv2.imwrite(name, img_text)
         img_text_dict["text"] = text[i]
-        img_text_dict["name"] = name
+        img_text_dict["path"] = name
         csv_new_file.append(img_text_dict)
         img_text_dict = {}
 
@@ -74,10 +84,10 @@ def create_img_text(csv_path, margin):
 
 
 if __name__ == '__main__':
-    path = "E:\Manga109 dataset\Manga109s_released_2021_12_30"
+    # path = "E:\Manga109 dataset\Manga109s_released_2021_12_30"
     output_csv_name = "data_text_img.csv"
     margin = 10
-    create_csv(path, output_csv_name)
+    create_csv(MANGA109_ROOT, output_csv_name)
     create_img_text(output_csv_name, margin)
 
 
