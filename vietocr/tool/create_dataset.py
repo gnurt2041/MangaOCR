@@ -4,6 +4,7 @@ import lmdb # install lmdb by "pip install lmdb"
 import cv2
 import numpy as np
 from tqdm import tqdm
+import pandas as pd
 
 def checkImageIsValid(imageBin):
     isvalid = True
@@ -39,9 +40,12 @@ def createDataset(outputPath, root_dir, annotation_path):
     """
 
     annotation_path = os.path.join(root_dir, annotation_path)
-    with open(annotation_path, 'r') as ann_file:
-        lines = ann_file.readlines()
-        annotations = [l.strip().split('\t') for l in lines]
+    # with open(annotation_path, 'r') as ann_file:
+    #     lines = ann_file.readlines()
+    #     annotations = [l.strip().split('\t') for l in lines]
+
+    data = pd.read_csv(annotation_path, header = None)
+    annotations = data.values.tolist()
 
     nSamples = len(annotations)
     env = lmdb.open(outputPath, map_size=1099511627776)
