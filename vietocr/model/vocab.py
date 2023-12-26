@@ -17,12 +17,7 @@ class Vocab():
         self.i2c[3] = '*'
 
     def encode(self, chars):
-        encode_list = []
-        for c in chars:
-            print(c)
-            encode_list.append(self.i2c[c])
-        return [self.go] + [encode_list] + [self.eos]
-        # return [self.go] + [self.c2i[c] for c in chars] + [self.eos]
+        return [self.go] + [self.c2i[c] for c in chars] + [self.eos]
     
     def decode(self, ids):
         first = 1 if self.go in ids else 0
@@ -39,3 +34,27 @@ class Vocab():
 
     def __str__(self):
         return self.chars
+    
+
+if __name__ == '__main__':
+    def read_txt_file(file_path):
+        with open(file_path, 'r', encoding='utf-8') as file:
+            file_content = file.read().replace('\n', '')  # Remove leading/trailing whitespace
+
+        return file_content
+
+    # Example usage:
+    txt_file_path = 'vocab.txt'
+    file_string = read_txt_file(txt_file_path)
+    # file_string = pd.read_csv(txt_file_path,header=None,on_bad_lines='skip')[0]
+    # file_string = file_string[0].tolist()
+
+    # print(file_string)
+    chars = '?'
+    a = Vocab(file_string)
+    # print(a.c2i)
+    # for c in a.c2i:
+        # print(c)
+        # chars = c
+    b = a.encode(chars)
+    print(b)
