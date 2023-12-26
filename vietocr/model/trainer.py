@@ -1,17 +1,17 @@
-from MangaOCR.vietocr.optim.optim import ScheduledOptim
-from MangaOCR.vietocr.optim.labelsmoothingloss import LabelSmoothingLoss
+from vietocr.optim.optim import ScheduledOptim
+from vietocr.optim.labelsmoothingloss import LabelSmoothingLoss
 from torch.optim import Adam, SGD, AdamW
 from torch import nn
-from MangaOCR.vietocr.tool.translate import build_model
-from MangaOCR.vietocr.tool.translate import translate, batch_translate_beam_search
-from MangaOCR.vietocr.tool.utils import download_weights
-from MangaOCR.vietocr.tool.logger import Logger
-from MangaOCR.vietocr.loader.aug import ImgAugTransform
+from vietocr.tool.translate import build_model
+from vietocr.tool.translate import translate, batch_translate_beam_search
+from vietocr.tool.utils import download_weights
+from vietocr.tool.logger import Logger
+from vietocr.loader.aug import ImgAugTransform
 
 import yaml
 import torch
-from MangaOCR.vietocr.loader.dataloader_v1 import DataGen
-from MangaOCR.vietocr.loader.dataloader import OCRDataset, ClusterRandomSampler, Collator
+from vietocr.loader.dataloader_v1 import DataGen
+from vietocr.loader.dataloader import OCRDataset, ClusterRandomSampler, Collator
 from torch.utils.data import DataLoader
 from einops import rearrange
 from torch.optim.lr_scheduler import CosineAnnealingLR, CyclicLR, OneCycleLR
