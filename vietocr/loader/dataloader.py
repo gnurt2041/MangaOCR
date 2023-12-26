@@ -32,11 +32,11 @@ class OCRDataset(Dataset):
 
         self.lmdb_path =  lmdb_path
 
-        if os.path.isdir(self.lmdb_path):
-            print('{} exists. Remove folder if you want to create new dataset'.format(self.lmdb_path))
-            sys.stdout.flush()
-        else:
-            createDataset(self.lmdb_path, root_dir, annotation_path)
+        # if os.path.isdir(self.lmdb_path):
+            # print('{} exists. Remove folder if you want to create new dataset'.format(self.lmdb_path))
+            # sys.stdout.flush()
+        # else:
+        createDataset(self.lmdb_path, root_dir, annotation_path)
         
         self.env = lmdb.open(
             self.lmdb_path,
