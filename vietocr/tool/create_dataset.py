@@ -46,22 +46,22 @@ def createDataset(outputPath, root_dir, annotation_path):
 
     data = pd.read_csv(annotation_path, header = None)
     annotations = data.values.tolist()
-    print(annotations)
+    # print(annotations)
     nSamples = len(annotations)
     env = lmdb.open(outputPath, map_size=1099511627776)
     cache = {}
     cnt = 0
-    # error = 0
+    error = 0
     
     # pbar = tqdm(range(nSamples), ncols = 100, desc='Create {}'.format(outputPath)) 
     for i in range(nSamples):
         imageFile, label = annotations[i]
         imagePath = os.path.join(root_dir, imageFile)
 
-        # if not os.path.exists(imagePath):
-            # error += 1
-            # continue
-        
+        if not os.path.exists(imagePath):
+            error += 1
+            continue
+
         with open(imagePath, 'rb') as f:
             imageBin = f.read()
         isvalid, imgH, imgW = checkImageIsValid(imageBin)
