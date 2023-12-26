@@ -46,7 +46,7 @@ def createDataset(outputPath, root_dir, annotation_path):
 
     data = pd.read_csv(annotation_path, header = None)
     annotations = data.values.tolist()
-
+    print(annotations)
     nSamples = len(annotations)
     env = lmdb.open(outputPath, map_size=1099511627776)
     cache = {}
