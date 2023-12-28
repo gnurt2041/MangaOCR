@@ -1,3 +1,5 @@
+import pandas as pd
+
 class Vocab():
     def __init__(self, chars):
         self.pad = 0
@@ -50,11 +52,20 @@ if __name__ == '__main__':
     # file_string = file_string[0].tolist()
 
     # print(file_string)
-    chars = '?'
+    chars = '!'
+    file_string = pd.read_csv("vietocr/fonts2.csv")
+    file_string = list(file_string["supported_chars"][0])
+    # print(file_string)
     a = Vocab(file_string)
-    # print(a.c2i)
-    # for c in a.c2i:
-        # print(c)
-        # chars = c
+    # # print(a.c2i)
+    # # for c in a.c2i:
+    #     # print(c)
+    #     # chars = c
     b = a.encode(chars)
     print(b)
+
+
+
+
+
+    
