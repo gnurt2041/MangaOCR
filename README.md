@@ -3,7 +3,7 @@
 Optical character recognition for Japanese text, with the main focus being Japanese manga.
 It uses a custom end-to-end model built with [PaddePaddle](https://github.com/PaddlePaddle/Paddle) framework and [PaddleOCR](https://github.com/PaddlePaddle/PaddleOCR) library. 
 
-This MangaOCR is inspired by an old project called [manga-ocr](https://github.com/kha-white/manga-ocr) built by [kha-white](https://github.com/kha-white) and other contributors. We admit that although kha-white's manga-ocr model has excellent performance, the size of the model is large and the recognition speed is a bit slow. Thus, this project is built with our goal to provide another end-to-end lightweight model for text recognition in manga. And to achieve performance equivalent to manga-ocr, we also aim to handle a variety of special text types in manga:
+This MangaOCR is inspired by an old project called [manga-ocr](https://github.com/kha-white/manga-ocr) built by [kha-white](https://github.com/kha-white) and other contributors. We admit that although kha-white's manga-ocr model has excellent performance, the size of the model is large (444Mb) and the recognition speed is a bit slow. Thus, this project is built with our goal to provide another end-to-end lightweight model for text recognition in manga. And to achieve performance equivalent to manga-ocr, we also aim to handle a variety of special text types in manga:
 - both vertical and horizontal text
 - text with furigana
 - text overlaid on images
