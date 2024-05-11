@@ -79,8 +79,8 @@ Train:
     data_dir: ./MangaOCR/images_text/
     ext_op_transform_idx: 1
     label_file_list:
-    - ./label_file/train_high_conf.csv
-    - ./label_file/train_synthetic.csv
+    - ../csv_file/train_high_conf.csv
+    - ../csv_file/train_synthetic.csv
     ratio_list: [1, 1]
     transforms:
     - DecodeImage:
@@ -107,8 +107,8 @@ Eval:
     name: SimpleDataSet
     data_dir: ./MangaOCR/images_text/
     label_file_list:
-    - ./MangaOCR/label_file/test_high_conf.csv
-    - ./MangaOCR/label_file/test_synthetic.csv
+    - ../csv_file/test_high_conf.csv
+    - ../csv_file/test_synthetic.csv
     ratio_list: [1, 1]
     transforms:
     - DecodeImage:
