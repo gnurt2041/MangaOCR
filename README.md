@@ -20,7 +20,7 @@ Up until now, our model has achieved the following:
 
 And things that haven't been achieved yet:
 - Better recognition results when compared with manga-ocr. Currently, our model has a CER(Character Error Rate) result of about 14.4% ( 2-10% is good for printed text and 10-20% for handwritten text ).
-- Full recognition of unusually long text. With documents of unusually long length (usually over 100 characters), the model is able to predict the first 25-50% of characters, then errors gradually appear.
+- Full recognition of unusually long text. With texts of unusually long length (usually over 100 characters), the model is able to predict the first 25-50% of characters, then errors gradually appear.
 
 # Examples
 
