@@ -1,3 +1,3 @@
 # MangaOCR
 
-![Flow chart](images/MangaOCR.drawio.png)
+![Flow chart](images/MangaOCR_new_pipeline.png)
