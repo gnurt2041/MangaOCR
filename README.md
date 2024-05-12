@@ -30,7 +30,7 @@ Here are some currently cherry-picked examples showing the capability of the mod
 |----------------------|------------------|
 | ![](images/examples/100.jpg) | 軍のテストフライトセンター |
 | ![](images/examples/19204.jpg) | つぎの日曜日は |
-| ![](images/examples/23221.jpg) | 成魚」はこれくれい |
+| ![](images/examples/23221.jpg) | 成魚」はこれくらい |
 | ![](images/examples/29215.jpg) | うわああああああああああああ |
 | ![](images/examples/32376.jpg) | 付き合い始めたきっかけだって |
 | ![](images/examples/66453.jpg) | 極東方面に所属不明機を多数確認！ |
